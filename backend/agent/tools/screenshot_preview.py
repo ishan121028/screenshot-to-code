@@ -7,7 +7,7 @@ from agent.state import AgentFileState
 from agent.tools.types import ToolExecutionResult, ToolMultimodalPart
 
 
-PREVIEW_VIEWPORTS = ("desktop", "mobile")
+PREVIEW_VIEWPORTS = ("desktop", "tablet", "mobile")
 
 
 async def run_screenshot_preview(
@@ -71,8 +71,8 @@ async def run_screenshot_preview(
 
     result: Dict[str, Any] = {
         "content": (
-            "Full-page desktop and mobile screenshots of the current preview "
-            "are attached."
+            "Full-page desktop, tablet and mobile screenshots of the current "
+            "preview are attached."
         ),
         "details": {
             "screenshots": [

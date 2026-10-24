@@ -272,10 +272,11 @@ def canonical_tool_definitions(
                 name="screenshot_preview",
                 description=(
                     "Render the current HTML file in a headless browser and return "
-                    "full-page desktop and mobile screenshots so you can visually "
-                    "verify your work. Use after creating or substantially editing "
-                    "the file to check layout, spacing, and fidelity to the "
-                    "requested design. Screenshots are returned as attached images."
+                    "full-page desktop, tablet and mobile screenshots so you can "
+                    "visually verify your work. Use after creating or substantially "
+                    "editing the file to check layout, spacing, responsive "
+                    "breakpoints, and fidelity to the requested design. Screenshots "
+                    "are returned as attached images."
                 ),
                 parameters=_screenshot_preview_schema(),
             )

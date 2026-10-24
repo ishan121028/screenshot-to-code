@@ -835,12 +835,12 @@ function renderToolDetails(event: AgentEvent, variantCode?: string) {
         <div>
           {event.status === "running" && (
             <div className="text-xs text-gray-600 dark:text-gray-400 py-1.5">
-              Rendering desktop and mobile previews...
+              Rendering desktop, tablet and mobile previews...
             </div>
           )}
           {event.status !== "running" && (
-            <div className="grid gap-3 py-2 sm:grid-cols-2">
-              {(["desktop", "mobile"] as const).map((viewport) => {
+            <div className="grid gap-3 py-2 sm:grid-cols-3">
+              {(["desktop", "tablet", "mobile"] as const).map((viewport) => {
                 const screenshot = screenshotPreviews.find((item) => {
                   const itemRecord = getRecord(item);
                   return itemRecord?.viewport === viewport;
