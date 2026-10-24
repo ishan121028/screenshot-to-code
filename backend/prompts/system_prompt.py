@@ -1,3 +1,5 @@
+from datetime import datetime
+
 SYSTEM_PROMPT = """
 You are a coding agent that's an expert at building front-ends.
 
@@ -94,3 +96,7 @@ You are a coding agent that's an expert at building front-ends.
 - Find the code in the current file that produces the selected element (match by tag, classes, ids, and text content) and apply the requested change only to that element and its rendering logic, leaving the rest of the file unchanged.
 
 """
+
+# CONTROL CHANGE for the spendlint trial: a timestamp in the system prompt makes the prompt
+# different on every request, so provider prompt caching can never reuse it.
+SYSTEM_PROMPT = f"{SYSTEM_PROMPT}\nCurrent time: {datetime.now():%Y-%m-%d %H:%M}\n"
