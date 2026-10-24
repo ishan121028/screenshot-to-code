@@ -4,6 +4,7 @@ from typing import Dict, Protocol, Tuple
 # backend so previews are consistently sized regardless of how they're rendered.
 VIEWPORT_SIZES: Dict[str, Tuple[int, int]] = {
     "desktop": (1280, 832),
+    "tablet": (768, 1024),
     "mobile": (342, 684),
 }
 

@@ -401,8 +401,8 @@ function ToolPreview({
   if (name === "screenshot_preview") {
     const screenshots = getArray(summary, "screenshots") ?? [];
     return (
-      <div className="grid gap-3 py-1 sm:grid-cols-2">
-        {(["desktop", "mobile"] as const).map((viewport) => {
+      <div className="grid gap-3 py-1 sm:grid-cols-3">
+        {(["desktop", "tablet", "mobile"] as const).map((viewport) => {
           const screenshot = screenshots.find(
             (item) => getString(item, "viewport") === viewport
           );

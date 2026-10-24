@@ -415,6 +415,7 @@ async def test_screenshot_preview_returns_image_part(
     assert result.ok is True
     assert captured == [
         {"html": "<main>hi</main>", "device": "desktop", "full_page": True},
+        {"html": "<main>hi</main>", "device": "tablet", "full_page": True},
         {"html": "<main>hi</main>", "device": "mobile", "full_page": True},
     ]
     assert result.result["details"]["screenshots"] == [
@@ -426,9 +427,16 @@ async def test_screenshot_preview_returns_image_part(
             "image_bytes": len(b"desktop-png-bytes"),
         },
         {
-            "viewport": "mobile",
+            "viewport": "tablet",
             "full_page": True,
             "image_part_index": 1,
+            "image_display_name": "preview_tablet.png",
+            "image_bytes": len(b"tablet-png-bytes"),
+        },
+        {
+            "viewport": "mobile",
+            "full_page": True,
+            "image_part_index": 2,
             "image_display_name": "preview_mobile.png",
             "image_bytes": len(b"mobile-png-bytes"),
         },
@@ -437,11 +445,14 @@ async def test_screenshot_preview_returns_image_part(
     screenshots = cast(list[dict[str, Any]], result.summary["screenshots"])
     # Previews are inlined as data URLs for the UI, not persisted as assets.
     desktop_url = cast(str, screenshots[0]["image_url"])
-    mobile_url = cast(str, screenshots[1]["image_url"])
+    tablet_url = cast(str, screenshots[1]["image_url"])
+    mobile_url = cast(str, screenshots[2]["image_url"])
     assert desktop_url.startswith("data:image/png;base64,")
+    assert tablet_url.startswith("data:image/png;base64,")
     assert mobile_url.startswith("data:image/png;base64,")
-    assert desktop_url != mobile_url
+    assert len({desktop_url, tablet_url, mobile_url}) == 3
     assert base64.b64decode(desktop_url.split(",", 1)[1]) == b"desktop-png-bytes"
+    assert base64.b64decode(tablet_url.split(",", 1)[1]) == b"tablet-png-bytes"
     assert base64.b64decode(mobile_url.split(",", 1)[1]) == b"mobile-png-bytes"
     # UI URLs and image payloads must not leak into the model-facing result payload.
     assert "image_url" not in result.result["details"]["screenshots"][0]
@@ -452,12 +463,15 @@ async def test_screenshot_preview_returns_image_part(
     assert result.multimodal_parts is not None
     assert [part.display_name for part in result.multimodal_parts] == [
         "preview_desktop.png",
+        "preview_tablet.png",
         "preview_mobile.png",
     ]
     assert result.multimodal_parts[0].mime_type == "image/png"
     assert result.multimodal_parts[0].data == b"desktop-png-bytes"
     assert result.multimodal_parts[1].mime_type == "image/png"
-    assert result.multimodal_parts[1].data == b"mobile-png-bytes"
+    assert result.multimodal_parts[1].data == b"tablet-png-bytes"
+    assert result.multimodal_parts[2].mime_type == "image/png"
+    assert result.multimodal_parts[2].data == b"mobile-png-bytes"
 
 
 @pytest.mark.asyncio
