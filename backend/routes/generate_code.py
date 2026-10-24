@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 import traceback
 from typing import Callable, Awaitable
 from fastapi import APIRouter, WebSocket
+import anthropic
 import openai
 from starlette.websockets import WebSocketDisconnect
 from websockets.exceptions import ConnectionClosedOK, ConnectionClosedError
@@ -698,6 +699,32 @@ class AgenticGenerationStage:
             print(f"[VARIANT {index + 1}] OpenAI Rate limit exceeded", e)
             error_message = (
                 "OpenAI error - 'You exceeded your current quota, please check your plan and billing details.'"
+                + (
+                    " Alternatively, you can purchase code generation credits directly on this website."
+                    if IS_PROD
+                    else ""
+                )
+            )
+            await self.send_message("variantError", error_message, index, None, None)
+            return ""
+        except anthropic.AuthenticationError as e:
+            print(f"[VARIANT {index + 1}] Anthropic Authentication failed", e)
+            error_message = (
+                "Incorrect Anthropic key. Please make sure your Anthropic API key is correct, "
+                "or create a new Anthropic API key in the Anthropic Console."
+                + (
+                    " Alternatively, you can purchase code generation credits directly on this website."
+                    if IS_PROD
+                    else ""
+                )
+            )
+            await self.send_message("variantError", error_message, index, None, None)
+            return ""
+        except anthropic.RateLimitError as e:
+            print(f"[VARIANT {index + 1}] Anthropic Rate limit exceeded", e)
+            error_message = (
+                "Anthropic error - rate limit exceeded. Please wait a moment and try again, "
+                "or check your usage limits in the Anthropic Console."
                 + (
                     " Alternatively, you can purchase code generation credits directly on this website."
                     if IS_PROD
